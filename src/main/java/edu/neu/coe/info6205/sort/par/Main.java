@@ -4,10 +4,7 @@ import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.ForkJoinPool;
 
 /**
@@ -15,15 +12,17 @@ import java.util.concurrent.ForkJoinPool;
  * TODO tidy it up a bit.
  */
 public class Main {
-
     public static void main(String[] args) {
+
         processArgs(args);
-        System.out.println("Degree of parallelism: " + ForkJoinPool.getCommonPoolParallelism());
         Random random = new Random();
-        int[] array = new int[2000000];
+        int arrayNum=200000;
+        System.out.println("Array num: "+arrayNum);
+        int[] array = new int[arrayNum];
         ArrayList<Long> timeList = new ArrayList<>();
-        for (int j = 50; j < 100; j++) {
-            ParSort.cutoff = 10000 * (j + 1);
+        for (int j = 1; j <=10; j++) {
+            ParSort.cutoff = 100000;
+            ParSort.myPool=new ForkJoinPool((int)Math.pow(2,j));
             // for (int i = 0; i < array.length; i++) array[i] = random.nextInt(10000000);
             long time;
             long startTime = System.currentTimeMillis();
@@ -35,8 +34,7 @@ public class Main {
             time = (endTime - startTime);
             timeList.add(time);
 
-
-            System.out.println("cutoff：" + (ParSort.cutoff) + "\t\t10times Time:" + time + "ms");
+            System.out.println("cutoff：" + (ParSort.cutoff) + "\t10times Time:" + time + "ms"+"\tThread Number: "+ (int)Math.pow(2,j));
 
         }
         try {
